@@ -16,6 +16,7 @@ module CheckGraphite
     on "--password PASSWORD", "-P PASSWORD"
     on "--dropfirst N", "-A N", Integer, :default => 0
     on "--droplast N", "-Z N", Integer, :default => 0
+    on "--type TYPE", "-T TYPE"
 
     enable_warning
     enable_critical
@@ -51,6 +52,12 @@ module CheckGraphite
       value = sum / datapoints.size
       store_value options.name, value
       store_message "#{options.name}=#{value}"
+      if defined? options.type
+        store_message "#{options.name}=#{value} #{options.type}"
+      else
+        real_metric = options.metric.rpartition(/\./)[2]
+        store_message "#{options.name}=#{value} #{real_metric}"
+      end
     end
   end
 end
